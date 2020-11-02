@@ -1,0 +1,92 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://levels/main_menu.gd" type="Script" id=1]
+[ext_resource path="res://custom_themes/slider/highlight.png" type="Texture" id=2]
+[ext_resource path="res://custom_themes/slider/grabber.png" type="Texture" id=3]
+[ext_resource path="res://custom_themes/slider/no_highlight.png" type="Texture" id=4]
+
+[sub_resource type="StyleBoxTexture" id=1]
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 160, 5 )
+
+[sub_resource type="StyleBoxTexture" id=2]
+texture = ExtResource( 2 )
+region_rect = Rect2( 0, 0, 160, 5 )
+
+[sub_resource type="StyleBoxTexture" id=3]
+texture = ExtResource( 2 )
+region_rect = Rect2( 0, 0, 160, 5 )
+
+[node name="main_menu" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="start" type="Button" parent="."]
+margin_left = 54.0
+margin_top = 339.0
+margin_right = 485.0
+margin_bottom = 446.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+size_flags_horizontal = 2
+size_flags_vertical = 2
+enabled_focus_mode = 0
+text = "START"
+
+[node name="height" type="HSlider" parent="."]
+margin_left = 89.0
+margin_top = 465.0
+margin_right = 452.0
+margin_bottom = 510.0
+rect_pivot_offset = Vector2( 65, 6 )
+custom_icons/tick = ExtResource( 3 )
+custom_icons/grabber_highlight = ExtResource( 3 )
+custom_icons/grabber = ExtResource( 3 )
+custom_styles/slider = SubResource( 1 )
+custom_styles/grabber_area_highlight = SubResource( 2 )
+custom_styles/grabber_area = SubResource( 3 )
+min_value = 5.0
+max_value = 32.0
+value = 5.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" type="RichTextLabel" parent="height"]
+margin_top = 40.0
+margin_right = 94.0
+margin_bottom = 80.0
+text = "Height: 5"
+
+[node name="width" type="HSlider" parent="."]
+margin_left = 89.0
+margin_top = 545.0
+margin_right = 452.0
+margin_bottom = 590.0
+rect_pivot_offset = Vector2( 65, 6 )
+custom_icons/tick = ExtResource( 3 )
+custom_icons/grabber_highlight = ExtResource( 3 )
+custom_icons/grabber = ExtResource( 3 )
+custom_styles/slider = SubResource( 1 )
+custom_styles/grabber_area_highlight = SubResource( 2 )
+custom_styles/grabber_area = SubResource( 3 )
+min_value = 5.0
+max_value = 32.0
+value = 5.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" type="RichTextLabel" parent="width"]
+margin_top = 40.0
+margin_right = 94.0
+margin_bottom = 80.0
+text = "Width: 5"
+[connection signal="button_up" from="start" to="." method="_on_start_button_up"]
+[connection signal="value_changed" from="height" to="." method="_on_height_value_changed"]
+[connection signal="value_changed" from="width" to="." method="_on_width_value_changed"]

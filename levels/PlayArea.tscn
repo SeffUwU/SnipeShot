@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://player/playerNode.tscn" type="PackedScene" id=1]
+[ext_resource path="res://levels/PlayArea.gd" type="Script" id=3]
+[ext_resource path="res://ControlScenes/SwipeDetector.tscn" type="PackedScene" id=5]
+[ext_resource path="res://playgroundGenerative/generatePlayground.tscn" type="PackedScene" id=6]
+
+[node name="PlayArea" type="Node2D"]
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="generatePlayground" parent="." instance=ExtResource( 6 )]
+
+[node name="SwipeDetector" parent="." instance=ExtResource( 5 )]
+
+[node name="playerNode" parent="." instance=ExtResource( 1 )]
+position = Vector2( -157, 2 )
+[connection signal="returnTilesSignal" from="generatePlayground" to="playerNode" method="_on_generatePlayground_returnTilesSignal"]
+[connection signal="swiped" from="SwipeDetector" to="playerNode" method="_on_SwipeDetector_swiped"]
