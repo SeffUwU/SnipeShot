@@ -31,6 +31,7 @@ func _on_generatePlayground_cameraExportVars(width, height, tiles, margin):
 	# Иначе, то устанавливаем зум
 		z = r.size.y / screen_size.y
 	zoom = Vector2.ONE * z
+	$Control.rect_min_size *= z
 	pass
 
 

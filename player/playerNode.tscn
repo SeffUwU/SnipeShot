@@ -1,7 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://sprites/player_sprite.png" type="Texture" id=1]
 [ext_resource path="res://player/playerNode.gd" type="Script" id=2]
+[ext_resource path="res://sprites/fire_line_temp.jpg" type="Texture" id=3]
+[ext_resource path="res://sprites/gun_temporary.png" type="Texture" id=4]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 29, 20 )
@@ -17,5 +19,26 @@ texture = ExtResource( 1 )
 region_enabled = true
 region_rect = Rect2( 0, 0, 32, 32 )
 
+[node name="gun_temporary" type="Sprite" parent="playerSprite"]
+visible = false
+show_behind_parent = true
+position = Vector2( 5.00003, -21.9999 )
+rotation = 1.5708
+scale = Vector2( 0.15574, 0.15574 )
+texture = ExtResource( 4 )
+
+[node name="fire_line_temp" type="Sprite" parent="playerSprite/gun_temporary"]
+modulate = Color( 1, 1, 1, 0.45098 )
+show_behind_parent = true
+position = Vector2( -3844.56, 32.1052 )
+rotation = -1.5708
+scale = Vector2( 0.235436, 13.2754 )
+texture = ExtResource( 3 )
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
+
+[node name="move_timer" type="Timer" parent="."]
+wait_time = 0.15
+one_shot = true
+[connection signal="timeout" from="move_timer" to="." method="_on_move_timer_timeout"]

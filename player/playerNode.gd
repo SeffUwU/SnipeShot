@@ -5,8 +5,9 @@ var playground_tiles  # Двумерный масств элементов иг�
 var tile_distance     # "Шаг" или расстояние между кадой "плиткой"
 var moving_dir        # Вектор направления движения (от -1,-1 до 1,1)
 var center_pos        # Центр сгенерированного игрового поля
-var playground_position = Vector2.ZERO  #
+var playground_position = Vector2.ZERO  # Текущая позиция на игровом поле
 var rng = RandomNumberGenerator.new()   # Переменная для генерации случайных цифр
+var shoot_mode = false
 
 func _on_generatePlayground_returnTilesSignal(width, height, tiles, tileDist, center):
 # Эта функция вызывается при открытии этой сцены и исходит от "generatePlayground.gd"
@@ -14,6 +15,13 @@ func _on_generatePlayground_returnTilesSignal(width, height, tiles, tileDist, ce
 	playground_tiles = tiles
 	tile_distance = tileDist
 	center_pos = center
+	
+	rng.randomize() # Генерирует случайный seed для следующей операции с randi_range
+	playground_position = Vector2(rng.randi_range(0,playground_size.x - 1),rng.randi_range(0,playground_size.y - 1))
+	self.position = playground_tiles[playground_position.x][playground_position.y].position - center_pos
+	playground_position += Vector2.ONE
+	# Код выше устанавливает игрока в случайное место на игровом поле
+	# Чтобы код получился не очень длинный и более читаемый разбил на строки
 
 var TouchVector = Vector2.ZERO# 2Д Вектор направления "свайпа"
 func _on_SwipeDetector_swiped(direction):
@@ -22,46 +30,55 @@ func _on_SwipeDetector_swiped(direction):
 #===============================================================================
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 func _ready():
-	rng.randomize() # Генерирует случайный seed для следующей операции с randi_range
-	self.position = playground_tiles[rng.randi_range(0,playground_size.x-1)]  \
-					[rng.randi_range(0,playground_size.x-1)] \
-					.position - center_pos
-	# Код выше устанавливает игрока в случайное место на игровом поле
-	# Чтобы код получился не очень длинный и более читаемый разбил на строки
+	pass
+	
 
 func _physics_process(delta): # Главная функция (вызывается раз в кадр)
+	reload_scene()
 	get_input()
 	move_step(delta) # delta - время прошедшее с последнего кадра (от 0 до 1)
 	spriteRotation()
-	print(playground_position)
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	if(Input.is_action_just_pressed("shooting_mode_btn")): shooting()
+
+#INPUT STARTS HERE++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+func _on_SwipeDetector_tap():
+	shooting()
 func get_input():
 # Функция для получения ввода игрока направления желаемого движения
 	moving_dir = Vector2.ZERO
-	if Input.is_action_pressed("move_left")  or TouchVector == Vector2(-1,0):
+	if (Input.is_action_pressed("move_left")  or TouchVector == Vector2(-1,0)) \
+	   and playground_position.y > 1:
 		moving_dir.x -= 1
-	elif Input.is_action_pressed("move_right") or TouchVector == Vector2(1, 0):
+	elif (Input.is_action_pressed("move_right") or TouchVector == Vector2(1, 0)) \
+	   and playground_position.y < playground_size.x:
 		moving_dir.x += 1
-	elif Input.is_action_pressed("move_up"   ) or TouchVector == Vector2(0,-1):
+	elif (Input.is_action_pressed("move_up"   ) or TouchVector == Vector2(0,-1)) \
+	   and playground_position.x > 1:
 		moving_dir.y -= 1
-	elif Input.is_action_pressed("move_down" ) or TouchVector == Vector2(0, 1):
+	elif (Input.is_action_pressed("move_down" ) or TouchVector == Vector2(0, 1)) \
+	   and playground_position.x < playground_size.y:
 		moving_dir.y += 1
 	TouchVector = Vector2.ZERO
 
-var desired_position = Vector2.ZERO  # Желаемая позиция (исп. в move_step())
-var stored_pos  # Сохраненная позиция (исп. в move_step())
-var time = 0  # время прошедшее с последнего "хода"
+#INPUT ENDS HERE----------------------------------------------------------------
 func move_step(delta):
-	if(desired_position == Vector2.ZERO):
-		desired_position.x = tile_distance * moving_dir.x
-		desired_position.y = tile_distance * moving_dir.y
-		stored_pos = self.position
-	while(time < 3.0 and desired_position != Vector2.ZERO):
-		position = lerp(position, stored_pos + desired_position, 15 * delta)
-		time += 7.0 * delta
-		yield()
-	desired_position = Vector2.ZERO
-	time = 0.0
+	if(moving_dir != Vector2.ZERO and $move_timer.is_stopped() and !shoot_mode):
+		self.position += moving_dir * tile_distance
+		playground_position.x += moving_dir.y
+		playground_position.y += moving_dir.x
+		$move_timer.start()
+func _on_move_timer_timeout():
+	#Ну оно пока что есть но применение найду ему позже
+	pass
+
+func shooting():
+	if (!shoot_mode):
+		shoot_mode = true
+		$playerSprite/gun_temporary.visible = true
+	else: 
+		shoot_mode = false
+		$playerSprite/gun_temporary.visible = false
+	pass
 
 func spriteRotation():  # Вращение главного спрайта
 	if moving_dir.x > 0:
@@ -72,5 +89,14 @@ func spriteRotation():  # Вращение главного спрайта
 		$playerSprite.rotation_degrees = 180
 	if moving_dir.y < 0:
 		$playerSprite.rotation_degrees = 0
+
+func reload_scene():
+	if (Input.is_action_just_pressed("reload")):
+		print("Okay! Restarting current scene!")
+		get_tree().reload_current_scene()
+
+
+
+
 
 

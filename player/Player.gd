@@ -23,7 +23,7 @@ func _on_generatePlayground_returnTilesSignal(height, width, tiles, tileDist, ce
 	stepTiles  = tiles
 	stepDistance = tileDist
 	self.position = Vector2(0,0) - center + stepTiles[rand_range(0,height)][rand_range(0,width)].position
-	print(self.position)
+	#print()
 #===============================================================================
 func _ready():
 	pass
@@ -34,8 +34,9 @@ var moving_dir = Vector2()
 
 
 func _process(delta):
-	moveStep(delta)
+	reload_scene()
 	
+	moveStep(delta)
 	getInput(touchInputDirection)
 	spriteRotation()
 	if Input.is_action_just_pressed("shooting_mode_btn"):
@@ -109,7 +110,10 @@ func spriteRotation():
 			$playerSprite.rotation_degrees = 0
 
 
-
+func reload_scene():
+	if(Input.is_action_just_pressed("reload")):
+		print('ss')
+		
 
 
 

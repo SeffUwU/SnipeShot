@@ -11,7 +11,6 @@ func _on_width_value_changed(value):  # вызываетя при изменен
 func _on_height_value_changed(value):
 	height = value  # вызывается при изменения слайдера высоты
 	$height/text.text = "Height:" + str(height)  #изменяю текст под слайдером
-	print(height)
 
 
 func _on_start_button_up():  # вызывается при нажатии кнопки Start

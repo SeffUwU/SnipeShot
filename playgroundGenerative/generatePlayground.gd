@@ -13,7 +13,6 @@ signal cameraExportVars(width,height,tiles,margin)
 onready var tile = preload("res://playgroundGenerative/playGroundTile.tscn")
 
 func _ready():
-	print(GlobalSingleton.width)
 	#центрируем эту сцену относительно всех будующе сгенерированных объектов
 	center_point = Vector2((((width-1)*tileDist)/2),((height-1)*tileDist)/2)
 	self.position -= center_point
