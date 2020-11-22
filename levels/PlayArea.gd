@@ -1,3 +1,0 @@
-extends Node2D
-
-# EMPTY TIL I GET THE IDEA OF WHAT I WANT

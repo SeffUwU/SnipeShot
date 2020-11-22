@@ -1,7 +1,7 @@
 extends Node2D
 
-onready var width = GlobalSingleton.width
-onready var height = GlobalSingleton.height
+onready var width = GameManager.width
+onready var height = GameManager.height
 export (int) var tileDist = 100
 
 var margin = Vector2(100,100)
@@ -20,10 +20,14 @@ func _ready():
 	#генерируем все "плитки"
 	wholeTiles = tiles2d()
 	
-	emit_signal("returnTilesSignal",height,width,wholeTiles,tileDist, center_point)
+	emit_signal("returnTilesSignal", height, width, wholeTiles, tileDist, center_point)
 	#отправим >player_Viewport размеры поля, все плитки, и "безопастную зону",  
 	#чтобы можно было легко определить zoom камеры
-	emit_signal("cameraExportVars",width,height,wholeTiles,margin)
+	emit_signal("cameraExportVars", width, height, wholeTiles, margin)
+	# Отправляет тоже самое во внутренний объект камеры.
+	print(center_point)
+	GameManager.set_tiles(tileDist, wholeTiles, center_point)
+	# В глобальном синглтоне выставляем дистанцию между плитками (для врагов)
 
 #Создает 2D массив со всеми "плитками"
 func tiles2d():

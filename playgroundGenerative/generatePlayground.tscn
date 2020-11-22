@@ -2,14 +2,8 @@
 
 [ext_resource path="res://playgroundGenerative/player_viewport.gd" type="Script" id=1]
 [ext_resource path="res://playgroundGenerative/generatePlayground.gd" type="Script" id=2]
-
-[sub_resource type="DynamicFontData" id=1]
-font_path = "res://Roboto-Regular.ttf"
-
-[sub_resource type="DynamicFont" id=2]
-use_mipmaps = true
-use_filter = true
-font_data = SubResource( 1 )
+[ext_resource path="res://ControlScenes/GUI.tscn" type="PackedScene" id=3]
+[ext_resource path="res://ControlScenes/GUI.gd" type="Script" id=4]
 
 [node name="generatePlayground" type="Node2D"]
 script = ExtResource( 2 )
@@ -18,36 +12,8 @@ script = ExtResource( 2 )
 current = true
 script = ExtResource( 1 )
 
-[node name="Control" type="Control" parent="player_viewport"]
-visible = false
-margin_left = -264.0
-margin_top = -582.0
-margin_right = 268.0
-margin_bottom = 586.0
-grow_horizontal = 2
-grow_vertical = 2
-rect_min_size = Vector2( 200, 400 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="CanvasLayer" type="CanvasLayer" parent="player_viewport"]
 
-[node name="NinePatchRect" type="NinePatchRect" parent="player_viewport/Control"]
-margin_right = 175.0
-margin_bottom = 122.0
-size_flags_horizontal = 2
-size_flags_vertical = 2
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="RichTextLabel" type="RichTextLabel" parent="player_viewport/Control/NinePatchRect"]
-margin_left = 36.0
-margin_top = 27.0
-margin_right = 123.0
-margin_bottom = 67.0
-custom_fonts/normal_font = SubResource( 2 )
-text = "HELLO"
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="GUI" parent="player_viewport/CanvasLayer" instance=ExtResource( 3 )]
+script = ExtResource( 4 )
 [connection signal="cameraExportVars" from="." to="player_viewport" method="_on_generatePlayground_cameraExportVars"]

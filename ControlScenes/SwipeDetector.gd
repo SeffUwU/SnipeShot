@@ -45,7 +45,7 @@ func _end_detection(position):
 			return
 		
 		if abs(direction.x) > abs(direction.y):
-		# Если модуль X больше моделя Y
+		# Если модуль X больше модуля Y
 			emit_signal("swiped", Vector2(sign(direction.x),0.0))
 			# Отправляет сигнал направления X
 			# Функция sign() возвращает знак числа (Пример: sign(-6) вернет -1,
