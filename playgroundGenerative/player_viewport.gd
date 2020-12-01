@@ -1,17 +1,17 @@
 extends Camera2D
 # Используется исключительно для измения приближения камеры к "плиткам" чтобы
-# уместить их всех
-var margin  # Зона вокруг плитки которую нужно тоже включить в кадр
+# уместить их всех на экране
+var margin  # Зона вокруг плитки которую нужно включить в кадр
 var width   # Ширина игрового поля
 var height  # Высота игрового поля
 var wholeTiles  # Массив всех плиток
-var targets = []  # Цели которы камера должна уместить в кадре
+var targets = []  # Цели которы камера должна уместить в кадре (первая и последняя плитка)
 
 onready var screen_size = self.get_viewport_rect().size
-# При запуске сохраняет размер "кадра" или viewport'а
+# При запуске сохраняет размер viewport'а
 
 func _on_generatePlayground_cameraExportVars(width, height, tiles, margin):
-# Сигнал отправляемый модулем "generatePlayground.gd"
+# Сигнал отправляемый модулем "generatePlayground"
 	wholeTiles = tiles
 	targets.append(wholeTiles[0][0])
 	targets.append(wholeTiles[height-1][width-1])

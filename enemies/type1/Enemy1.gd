@@ -17,6 +17,7 @@ var playground_tiles
 var tile_distance:int
 var center_pos
 var can_move = false
+var dead = false
 onready var player = get_tree().get_nodes_in_group("Player")[0]
 var rng = RandomNumberGenerator.new()
 
@@ -31,45 +32,46 @@ func _spawn_self():
 		is_spawned = true
 		self.visible = true
 
-func player_direction(player)->Vector2:
+func player_direction(pl)->Vector2:
 # Эта функция возвращает количетсво "плиток" до игрока по осям x,y.
 # Используется в move_to_player()
-	var vector = player.position - self.position
+	var vector = pl.position - self.position
 	return (Vector2(vector.x,vector.y) / 100)
 
 
 func move_to_player(player_dir)->void:
-	if(GameManager.players_move == false and $Timer.is_stopped() and can_move == false):
-		$Timer.start()
-	if (can_move == true and GameManager.players_move == false):
-		if (abs(player_dir.x) < abs(player_dir.y)):
-			self.position.y += tile_distance * sign(player_dir.y)
-		elif (abs(player_dir.x) > abs(player_dir.y)):
-			self.position.x += tile_distance * sign(player_dir.x)
-		else:
-			self.position.x += sign(player_dir.x) * tile_distance
-		can_move = false
-		GameManager.switch_turn() # Дать игроку ход
+	
+	var tile_free = _desired_tile_free()
+	if (can_move and !dead):
+			if (abs(player_dir.x) < abs(player_dir.y)) and tile_free:
+				self.position.y += tile_distance * sign(player_dir.y)
+			elif (abs(player_dir.x) > abs(player_dir.y)) and tile_free:
+				self.position.x += tile_distance * sign(player_dir.x)
+			else:
+				self.position.x += sign(player_dir.x) * tile_distance
+			can_move = false
+			GameManager.remove_from_turn_list(self) # Удалить себя из списка проходящих ход
 		
 func _on_Timer_timeout():
 	can_move = true
 
-func desired_tile_is_free()->bool:
-	if($detectionHull.overlaps_area(player)):
-		return false
-	else:
+
+func _desired_tile_free():
+	if($next_move.get_overlapping_areas().empty()):
 		return true
-
-
+	else:
+		return false
+	
 
 # DIE
-func _on_PlayerNode_player_kills():
+func _on_Player_player_kills():
+	dead = true
 	$death_particles.emitting = true
 	$death_timer.set_wait_time($death_particles.lifetime + 0.1)
 	$death_timer.start()
 func _on_death_timer_timeout():
 	GameManager.add_points(1)
 	GameManager.alive_enemies -= 1
-	queue_free()
+	GameManager.emeny_die(self)
 # ===
 

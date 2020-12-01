@@ -1,35 +1,31 @@
 extends Node2D
+# Входные параметры из игрового менеджера
+onready var width = GameManager.width   # Длина поля
+onready var height = GameManager.height # Ширина поля
+export (int) var tileDist = 100 # Расст. между плитками
 
-onready var width = GameManager.width
-onready var height = GameManager.height
-export (int) var tileDist = 100
+var margin = Vector2(100,100) # Переменная для экспорта в другой модуль
+var wholeTiles # Массив для хранения всех "плиток" игровогополя
+var center_point = Vector2(0,0) # Центральная точка игрвого поля
+signal returnTilesSignal(width,height,tiles,tileDist, center) # Сигнал для экспорта данных
+signal cameraExportVars(width,height,tiles,margin) # Сигнал для экспорта данных
+onready var tile = preload("res://playgroundGenerative/playGroundTile.tscn") # Ссылка на объект "плитки"
 
-var margin = Vector2(100,100)
-
-var wholeTiles
-var center_point = Vector2(0,0)
-signal returnTilesSignal(width,height,tiles,tileDist, center)
-signal cameraExportVars(width,height,tiles,margin)
-onready var tile = preload("res://playgroundGenerative/playGroundTile.tscn")
-
-func _ready():
-	#центрируем эту сцену относительно всех будующе сгенерированных объектов
+func _ready(): # Функция вызывающаяся при запуске модуля.
+	# Код ниже центрирует все "плитки", который будут сгенерированы
 	center_point = Vector2((((width-1)*tileDist)/2),((height-1)*tileDist)/2)
 	self.position -= center_point
-	#==
-	#генерируем все "плитки"
-	wholeTiles = tiles2d()
+	
+	wholeTiles = tiles2d() # Генерируем все "плитки"
 	
 	emit_signal("returnTilesSignal", height, width, wholeTiles, tileDist, center_point)
-	#отправим >player_Viewport размеры поля, все плитки, и "безопастную зону",  
-	#чтобы можно было легко определить zoom камеры
+	# Отправим >player_Viewport размеры поля, все плитки, и "безопастную зону",  
+	# чтобы можно было легко определить zoom камеры
 	emit_signal("cameraExportVars", width, height, wholeTiles, margin)
 	# Отправляет тоже самое во внутренний объект камеры.
-	print(center_point)
 	GameManager.set_tiles(tileDist, wholeTiles, center_point)
-	# В глобальном синглтоне выставляем дистанцию между плитками (для врагов)
-
-#Создает 2D массив со всеми "плитками"
+	# Отправляем те же данные в "игровой менеджер"
+# Код ниже создает и помещает плитки в 2D массив WholeTiles
 func tiles2d():
 	var array = []
 	for i in height:

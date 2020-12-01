@@ -5,12 +5,12 @@ var height = 6  # высота игрового поля
 
 func _on_width_value_changed(value):  # вызываетя при изменении слайлепа ширины
 	width = value
-	$width/text.text = "Width:" + str(width)  #изменяю текст под слайдером
+	$CenterContainer/Control/width/text.text = "Width:" + str(width)  #изменяю текст под слайдером
 
 
 func _on_height_value_changed(value):
 	height = value  # вызывается при изменения слайдера высоты
-	$height/text.text = "Height:" + str(height)  #изменяю текст под слайдером
+	$CenterContainer/Control/height/text.text = "Height:" + str(height)  #изменяю текст под слайдером
 
 
 func _on_start_button_up():  # вызывается при нажатии кнопки Start
@@ -21,9 +21,9 @@ func _on_start_button_up():  # вызывается при нажатии кно
 
 func display_warn(h,w):
 	if(h >= 16 or w >= 16):
-		$WH_warn.visible = true
+		$CenterContainer/Control/WH_warn.visible = true
 	else:
-		$WH_warn.visible = false
+		$CenterContainer/Control/WH_warn.visible = false
 
 func _process(delta):
 	display_warn(height, width)
